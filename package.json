@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --ignore /node_modules/ --transpile-only ./src/server.ts"
+    "dev": "ts-node-dev --respawn --ignore /node_modules/ --transpile-only ./src/server.ts",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,8 @@
     "@types/node": "^22.5.1",
     "eslint": "^9.9.1",
     "globals": "^15.9.0",
+    "husky": "^9.1.5",
+    "lint-staged": "^15.2.9",
     "prettier": "^3.3.3",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.5.4",
