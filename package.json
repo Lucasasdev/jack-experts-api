@@ -7,7 +7,8 @@
     "prepare": "husky",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
-    "test:staged": "npm run test --findRelatedTests"
+    "test:staged": "npm run test --findRelatedTests",
+    "test:push": "npm run test --coverage"
   },
   "repository": {
     "type": "git",
