@@ -1,2 +1,11 @@
+# node dependencies
 node_modules
+
+# system build
+build
+
+# global variables
 .env
+
+# test file
+coverage
