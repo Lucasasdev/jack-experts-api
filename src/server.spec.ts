@@ -1,6 +1,3 @@
-import Person from "./server";
-
-it("Should return a name", () => {
-  const person = new Person();
-  expect(person.sayMyName()).toBe("Lucas");
+it("Should ensure that listen port is incorrect", () => {
+  expect(process.env.PORT).toBe(undefined);
 });
