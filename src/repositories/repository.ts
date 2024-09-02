@@ -42,3 +42,12 @@ export const createTask = async ({
   });
   return task;
 };
+
+export const getTasks = async (userId: number): Promise<Task[]> => {
+  const tasks = prismaClient.task.findMany({
+    where: {
+      userId: userId,
+    },
+  });
+  return tasks;
+};

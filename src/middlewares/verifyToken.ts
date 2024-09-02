@@ -27,9 +27,11 @@ export const verifyJwt = (
     }
 
     req.user = decoded as UserPayload;
+
     next();
   } catch (error) {
     console.error(error);
+
     return res.status(500).json({ message: "Internal server error" });
   }
 };
