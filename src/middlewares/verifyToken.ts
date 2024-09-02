@@ -1,7 +1,12 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { CustomRequest, UserPayload } from "../controllers/controller";
 
-export const verifyJwt = (req: Request, res: Response, next: NextFunction) => {
+export const verifyJwt = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -17,8 +22,11 @@ export const verifyJwt = (req: Request, res: Response, next: NextFunction) => {
 
     const decoded = jwt.verify(token, String(process.env.JWT_SECRET));
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (req as any).user = decoded;
+    if (!decoded) {
+      return res.sendStatus(401);
+    }
+
+    req.user = decoded as UserPayload;
     next();
   } catch (error) {
     console.error(error);

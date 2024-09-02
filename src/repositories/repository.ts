@@ -1,4 +1,4 @@
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient, Task, User } from "@prisma/client";
 const prismaClient = new PrismaClient();
 
 export const registerUser = async ({
@@ -23,4 +23,22 @@ export const login = async (email: string) => {
     },
   });
   return user;
+};
+
+export const createTask = async ({
+  title,
+  description,
+  userId,
+}: Omit<
+  Task,
+  "id" | "createdAt" | "updatedAt" | "isCompleted"
+>): Promise<Task> => {
+  const task = await prismaClient.task.create({
+    data: {
+      title: title,
+      description: description,
+      userId: userId,
+    },
+  });
+  return task;
 };

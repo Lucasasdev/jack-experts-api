@@ -1,7 +1,17 @@
 import { Request, Response } from "express";
 import * as repository from "../repositories/repository";
-import { User } from "@prisma/client";
+import { Task, User } from "@prisma/client";
 import jwt from "jsonwebtoken";
+
+export interface UserPayload {
+  userId: number;
+  iat: number;
+  exp: number;
+}
+
+export interface CustomRequest extends Request {
+  user?: UserPayload;
+}
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
@@ -38,6 +48,28 @@ export const login = async (req: Request, res: Response) => {
       },
     );
     return res.json({ auth: true, token });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const createTask = async (req: CustomRequest, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+    const { title, description } = req.body as Task;
+
+    if (typeof userId !== "number") {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+
+    const task = await repository.createTask({ title, description, userId });
+
+    if (!task) {
+      return res.sendStatus(400);
+    }
+
+    return res.sendStatus(201);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
