@@ -92,7 +92,7 @@ export const getTasks = async (req: CustomRequest, res: Response) => {
   } catch (error) {
     console.error(error);
 
-    return res.status(500);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -122,5 +122,32 @@ export const updateTask = async (req: CustomRequest, res: Response) => {
     console.error(error);
 
     return res.sendStatus(500).json({ message: "Internal server error" });
+  }
+};
+
+export const deleteTask = async (req: CustomRequest, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+    const id = Number(req.params.id);
+
+    if (typeof userId !== "number") {
+      return res.sendStatus(401);
+    }
+
+    if (id === 0 || typeof id !== "number") {
+      return res.status(400).json({ message: "Invalid task number" });
+    }
+
+    const task = await repository.deleteTask({ id, userId });
+
+    if (!task) {
+      return res.sendStatus(400);
+    }
+
+    return res.status(200).json(task);
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

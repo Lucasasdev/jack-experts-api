@@ -57,7 +57,7 @@ export const updateTask = async ({
   userId,
   title,
   description,
-}: Omit<Task, "createdAt" | "updatedAt" | "isCompleted">) => {
+}: Omit<Task, "createdAt" | "updatedAt" | "isCompleted">): Promise<Task> => {
   const task = prismaClient.task.update({
     where: {
       id: id,
@@ -66,6 +66,22 @@ export const updateTask = async ({
     data: {
       title: title,
       description: description,
+    },
+  });
+  return task;
+};
+
+export const deleteTask = async ({
+  id,
+  userId,
+}: Omit<
+  Task,
+  "createdAt" | "updatedAt" | "isCompleted" | "title" | "description"
+>): Promise<Task> => {
+  const task = await prismaClient.task.delete({
+    where: {
+      id: id,
+      userId: userId,
     },
   });
   return task;
