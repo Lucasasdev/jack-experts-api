@@ -51,3 +51,22 @@ export const getTasks = async (userId: number): Promise<Task[]> => {
   });
   return tasks;
 };
+
+export const updateTask = async ({
+  id,
+  userId,
+  title,
+  description,
+}: Omit<Task, "createdAt" | "updatedAt" | "isCompleted">) => {
+  const task = prismaClient.task.update({
+    where: {
+      id: id,
+      userId: userId,
+    },
+    data: {
+      title: title,
+      description: description,
+    },
+  });
+  return task;
+};

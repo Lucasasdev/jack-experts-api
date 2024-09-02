@@ -80,8 +80,10 @@ export const getTasks = async (req: CustomRequest, res: Response) => {
   try {
     const userId = req.user?.userId;
 
-    if (typeof userId !== "number") {
-      return res.sendStatus(401);
+    if (!userId || typeof userId !== "number") {
+      return res
+        .status(401)
+        .json({ message: "userId must be a integer number" });
     }
 
     const tasks = await repository.getTasks(userId);
@@ -91,5 +93,34 @@ export const getTasks = async (req: CustomRequest, res: Response) => {
     console.error(error);
 
     return res.status(500);
+  }
+};
+
+export const updateTask = async (req: CustomRequest, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+    const id = Number(req.params.id);
+    const { title, description } = req.body;
+
+    if (typeof userId !== "number") {
+      return res.sendStatus(401);
+    }
+
+    if (id === 0 || typeof id !== "number") {
+      return res.status(400).json({ message: "Invalid task number" });
+    }
+
+    const task = await repository.updateTask({
+      userId,
+      id,
+      title,
+      description,
+    });
+
+    return res.status(200).json({ message: "Task updated!", task });
+  } catch (error) {
+    console.error(error);
+
+    return res.sendStatus(500).json({ message: "Internal server error" });
   }
 };
