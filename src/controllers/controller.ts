@@ -2,6 +2,11 @@ import { Request, Response } from "express";
 import * as repository from "../repositories/repository";
 import { Task, User } from "@prisma/client";
 import jwt from "jsonwebtoken";
+import {
+  isValidPassword,
+  isValidEmail,
+  isEmailExist,
+} from "../helpers/registerValidators";
 
 export interface UserPayload {
   userId: number;
@@ -16,6 +21,19 @@ export interface CustomRequest extends Request {
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body as User;
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ message: "Invalid email" });
+    }
+
+    if (!isValidPassword(password)) {
+      return res.status(400).json({ message: "Invalid password" });
+    }
+
+    if (await isEmailExist(email)) {
+      return res.status(400).json({ message: "Email already exist" });
+    }
+
     const user = await repository.registerUser({
       name,
       email,
@@ -27,6 +45,7 @@ export const registerUser = async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.error(error);
+
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -58,7 +77,6 @@ export const createTask = async (req: CustomRequest, res: Response) => {
   try {
     const userId = req.user?.userId;
     const { title, description } = req.body as Task;
-
     if (typeof userId !== "number") {
       return res.status(401).json({ message: "User not authenticated" });
     }
