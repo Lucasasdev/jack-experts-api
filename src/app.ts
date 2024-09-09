@@ -3,8 +3,10 @@ import routes from "./routes/routes";
 import morgan from "morgan";
 import helmet from "helmet";
 import { verifyJwt } from "./middlewares/verifyToken";
+import cors from "cors";
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(helmet());
