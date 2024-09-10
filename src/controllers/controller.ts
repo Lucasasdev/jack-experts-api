@@ -66,7 +66,11 @@ export const login = async (req: Request, res: Response) => {
         expiresIn: 1200,
       },
     );
-    return res.json({ auth: true, token });
+    return res.json({
+      auth: true,
+      user: { id: user.id, name: user.name, email: user.email },
+      token,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
